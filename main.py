@@ -4,25 +4,21 @@ connect = psycopg2.connect(dbname="Users", user="postgres", password="admin", ho
 connect.autocommit = True
 cur = connect.cursor()
 
-cur.execute("""CREATE TABLE IF NOT EXISTS uslugi (
+cur.execute("""CREATE TABLE IF NOT EXISTS shops (
     id serial PRIMARY KEY,
-    code varchar(10) NOT NULL,
-    title varchar(100) NOT NULL,
-    price float(4) NOT NULL
+    shop_id varchar(50) NOT NULL,
+    district varchar(100) NOT NULL,
+    address varchar(100) NOT NULL
 );
 """)
 
+f = open("Магазины.csv", encoding="utf-8")
 
-
-
-with open('table.csv', encoding='utf-8-sig') as table:
-    for row in table:
-        sp = row.strip().split(";")
-        print(sp)
-        cur.execute(
-            "INSERT INTO uslugi (code, title, price) VALUES (%s, %s, %s)",
-            (sp[0], sp[1], float(sp[2].replace(',', '.')))
-        )
+for row in f:
+    sp = row.strip().split(";")
+    cur.execute("INSERT INTO shops (shop_id, district, address) VALUES (%s, %s, %s)", (sp[0], sp[1], sp[2]))
 
 cur.close()
 connect.close()
+
+
